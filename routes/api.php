@@ -4,6 +4,11 @@ use App\Http\Controllers\User\AuthController;
 use Illuminate\Support\Facades\Route;
 
 // auth route
-Route::group(["prefix"=> "auth/user"], function () {
-    Route::post("/register", [AuthController::class, 'register'])->name("");
-});
+Route::controller(AuthController::class)->group(function () {
+    Route::group(['prefix' => '/auth/user'], function () {
+        Route::post('login', 'login');
+        Route::post('register', 'register');
+        Route::post('logout', 'logout');
+        Route::post('refresh', 'refresh');
+    });
+})->middleware('auth:api');
