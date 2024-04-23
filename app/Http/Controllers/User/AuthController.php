@@ -15,7 +15,7 @@ class AuthController extends Controller implements HasMiddleware
     public static function middleware(): array
     {
         return [
-            new Middleware(middleware: 'auth:api', except: ['login', 'register']),
+            new Middleware(middleware: 'auth:api', except: ['login', 'register', 'forgotPassword', 'validateOTP']),
         ];
     }
 
@@ -68,5 +68,65 @@ class AuthController extends Controller implements HasMiddleware
 
     public function refresh() {
         return AuthService::refresh();
+    }
+
+    public function forgotPassword(Request $request) {
+        $rule = [
+            "email"=> "required|email",
+        ];
+
+        $validator = Validator::make($request->all(), $rule);
+        if ($validator->fails()) {
+            return response()->json([
+                "message"=> $validator->errors(),
+                "code" => 400
+            ], 400);
+        }
+
+        return AuthService::forgotPassword($request->email);
+    }
+
+    public function validateOTP(Request $request) {
+        $rule = [
+            "email"=> "required|email",
+            "otp"=> "required",
+        ];
+
+        $validator = Validator::make($request->all(), $rule);
+        if ($validator->fails()) {
+            return response()->json([
+                "message"=> $validator->errors(),
+                "code" => 400
+            ], 400);
+        }
+
+        return AuthService::validateOTP($request->email, $request->otp);
+    }
+
+    public function resetPassword(Request $request) {
+        // validate the request
+        $rule = [
+            "password"=> "required|min:6|max:50",
+        ];
+
+        $validator = Validator::make($request->all(), $rule);
+        if ($validator->fails()) {
+            return response()->json([
+                "message"=> $validator->errors(),
+                "code" => 400
+            ], 400);
+        }
+
+        //get token from header
+        $token = $request->header('Authorization');
+
+        if(!$token) {
+            return response()->json([
+                'status' => 'error',
+                'message' => 'Unauthenticated',
+            ], 404);
+        }
+
+        return AuthService::resetPassword($request->password);
     }
 }

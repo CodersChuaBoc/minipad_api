@@ -10,5 +10,8 @@ Route::controller(AuthController::class)->group(function () {
         Route::post('register', 'register');
         Route::post('logout', 'logout');
         Route::post('refresh', 'refresh');
+        Route::post('forgot-password', 'forgotPassword');
+        Route::post('validate-otp', 'validateOTP');
+        Route::post('reset-password', 'resetPassword');
     });
 })->middleware('auth:api');
