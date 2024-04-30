@@ -129,11 +129,4 @@ class AuthController extends Controller implements HasMiddleware
 
         return AuthService::resetPassword($request->password);
     }
-
-    public function indexRegister() {
-        return view('pages.register');
-    }
-    public function indexLogin() {
-        return view('pages.login');
-    }
 }
