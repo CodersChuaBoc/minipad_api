@@ -126,6 +126,16 @@ class AuthService
 
     public static function forgotPassword($email)
     {
+        // Check if the user exists
+        $user = User::where('email', $email)->first();
+
+        if (!$user) {
+            return response()->json([
+                'status' => 'error',
+                'message' => 'User not found',
+            ], 404);
+        }
+
         $service = new static;
         $otp = $service->generateOTP();
 
