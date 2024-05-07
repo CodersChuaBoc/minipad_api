@@ -15,6 +15,12 @@ Route::prefix('auth')->group(function () {
     Route::get('/login', function () {
         return view('pages.login');
     })->name('login');
+    Route::get('/forgot', function () {
+        return view('pages.forgot');
+    })->name('forgot');
+    Route::get('/resetpassword', function () {
+        return view('pages.resetpassword');
+    })->name('resetpassword');
 });
 
 Route::get('/captcha', [CaptchaController::class, 'createCaptcha']);
