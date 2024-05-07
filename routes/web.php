@@ -8,11 +8,11 @@ Route::get('/', function () {
 
 Route::prefix('auth')->group(function () {
     Route::get('/register', function () {
-        return view('pages.register');
+        return view('pages.v2.register');
     })->name('register');
     
     Route::get('/login', function () {
-        return view('pages.login');
+        return view('pages.v2.login');
     })->name('login');
 });
 
