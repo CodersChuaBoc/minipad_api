@@ -12,7 +12,7 @@
             /* float: left;
           width:calc(100%-100px);
           padding: 0px 50px;
-          
+
             width:50%; margin-left:25%;margin-bottom:50px; */
             margin-bottom: 0.25rem;
             display: block;
@@ -249,23 +249,23 @@
                 </div>
 
 
-                <div><a href={{ route('login') }} class="login ">Bạn đã có tài khoản?</a></div>
+                <div><a href={{ route('login') }} class="login">Bạn đã có tài khoản?</a></div>
             </form>
         </div>
     </div>
-    </div>
     <script>
-        const passwordInput = document.getElementById('password');
-        const rePasswordInput = document.getElementById('repassword');
+        const email = document.getElementById('email');
+        const password = document.getElementById('password');
+        const rePassword = document.getElementById('repassword');
         const showPasswordCheckbox = document.querySelector('.showpw');
 
         showPasswordCheckbox.addEventListener('change', function() {
             if (this.checked) {
-                passwordInput.type = 'text';
-                rePasswordInput.type = 'text';
+                password.type = 'text';
+                rePassword.type = 'text';
             } else {
-                passwordInput.type = 'password';
-                rePasswordInput.type = 'password';
+                password.type = 'password';
+                rePassword.type = 'password';
             }
         });
 
@@ -274,7 +274,7 @@
         if (email.value === '' || username.value === '' || password.value === '' || rePassword.value === '') {
             alert('Please fill in all fields');
             return;
-        } 
+        }
         if (password.value !== rePassword.value) {
             alert('Passwords do not match');
             return;
