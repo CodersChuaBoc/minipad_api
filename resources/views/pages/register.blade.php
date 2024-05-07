@@ -34,7 +34,7 @@
                         <input type="password" class="form-control" id="re-password" placeholder="Reinput your password">
                     </div>
                 </div>
-                <p class="mb-3"> Have an account? <a href="login">Click Here!</a> </p>
+                <p class="mb-3"> Already have an account? <a href="login">Click here!</a> </p>
                 <div class="submit-container mb-5 ">
                     <button type="signup" class="btn btn-primary custom-btn">Sign Up</button>
                 </div>
@@ -53,7 +53,7 @@
         if (email.value === '' || username.value === '' || password.value === '' || rePassword.value === '') {
             alert('Please fill in all fields');
             return;
-        } 
+        }
         if (password.value !== rePassword.value) {
             alert('Passwords do not match');
             return;

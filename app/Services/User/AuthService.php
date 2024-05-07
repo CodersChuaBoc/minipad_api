@@ -73,14 +73,12 @@ class AuthService
             ], 404);
         }
 
-        // compare the password
         if (!Hash::check($password, $user->password)) {
             return response()->json([
                 'status' => 'error',
                 'message' => 'Unauthorized',
             ], 401);
         }
-
 
         $token = Auth::attempt(['email' => $email, 'password' => $password]);
 
