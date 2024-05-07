@@ -136,4 +136,10 @@ class AuthController extends Controller implements HasMiddleware
     public function indexLogin() {
         return view('pages.login');
     }
+    public function indexForgot() {
+        return view('pages.forgot');
+    }
+    public function indexResetPassword() {
+        return view('pages.resetpassword');
+    }
 }

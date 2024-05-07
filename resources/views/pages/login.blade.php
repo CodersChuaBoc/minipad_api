@@ -28,7 +28,7 @@
                     <input type="password" class="form-control" id="password" placeholder="Password">
                     </div>
                 </div>
-                <p class="mb-3"> Lost password? <a href="register">Click Here!</a> </p>
+                <p class="mb-3"> Lost password? <a href="forgot">Click Here!</a> </p>
                 <div class="submit-container mb-5 ">
                 <a href="register" type="button" class="btn btn-outline-primary custom-btn">Sign Up</a>
                 <button type="submit" class="btn btn-primary custom-btn">Log In</button>

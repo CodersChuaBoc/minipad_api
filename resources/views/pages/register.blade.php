@@ -53,20 +53,18 @@
         if (email.value === '' || username.value === '' || password.value === '' || rePassword.value === '') {
             alert('Please fill in all fields');
             return;
-        } 
+        }
         if (password.value !== rePassword.value) {
             alert('Passwords do not match');
             return;
         }
-        fetch('/api/auth/user/register', {
+        fetch('/api/auth/user/validate-otp', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json'
             },
             body: JSON.stringify({
-                email: email.value,
-                name: username.value,
-                password: password.value
+                otp:otp.value,
             })
         })
         .then(response => response.json())
