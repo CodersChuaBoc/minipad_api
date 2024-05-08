@@ -80,6 +80,7 @@ class AuthService
             ], 401);
         }
 
+
         $token = Auth::attempt(['email' => $email, 'password' => $password]);
 
         if (!$token) {

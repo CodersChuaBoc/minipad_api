@@ -6,6 +6,7 @@
     "license": "MIT",
     "require": {
         "php": "^8.2",
+        "ext-gd": "*",
         "kriswallsmith/buzz": "^0.15.0",
         "laravel/framework": "^11.0",
         "laravel/sanctum": "^4.0",
@@ -16,8 +17,7 @@
         "predis/predis": "^2.2",
         "spatie/crypto": "^2.0",
         "symfony/http-client": "^7.0",
-        "symfony/mailgun-mailer": "^7.0",
-        "ext-gd": "*"
+        "symfony/mailgun-mailer": "^7.0"
     },
     "require-dev": {
         "fakerphp/faker": "^1.23",

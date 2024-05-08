@@ -233,10 +233,11 @@
             <hr>
             <form id="register">
                 <div class="form-email">
-
                     <label class="email ">Email:</label> <br>
                     <input type="text" name="email" class="form-control border " id="email"
                         placeholder="Nhập email">
+                    <input type="text" name="name" class="form-control border " id="name"
+                        placeholder="Nhập tên">
                 </div>
                 <div class="form-pass">
                     <label class="pw">Mật khẩu:</label> <br>
@@ -255,6 +256,7 @@
     </div>
     <script>
         const email = document.getElementById('email');
+        const name = document.getElementById('name');
         const password = document.getElementById('password');
         const rePassword = document.getElementById('repassword');
         const showPasswordCheckbox = document.querySelector('.showpw');
@@ -270,36 +272,38 @@
         });
 
         document.getElementById('register').addEventListener('submit', async (e) => {
-        e.preventDefault();
-        if (email.value === '' || username.value === '' || password.value === '' || rePassword.value === '') {
-            alert('Please fill in all fields');
-            return;
-        }
-        if (password.value !== rePassword.value) {
-            alert('Passwords do not match');
-            return;
-        }
-        fetch('/api/auth/user/register', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify({
-                email: email.value,
-                name: username.value,
-                password: password.value
-            })
-        })
-        .then(response => response.json())
-        .then(data => {
-            sessionStorage.setItem("accessToken", JSON.stringify(data.authorisation));
-            sessionStorage.setItem("User", JSON.stringify(data.user));
-            window.location.replace('/')
-        })
-        .catch((error) => {
-            alert('An error occurred. Please try again');
+            e.preventDefault();
+            if (email.value === '' || name.value === '' || password.value === '' || rePassword.value ===
+                '') {
+                alert('Please fill in all fields');
+                return;
+            }
+            if (password.value !== rePassword.value) {
+                alert('Passwords do not match');
+                return;
+            }
+            fetch('/api/auth/user/register', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        email: email.value,
+                        name: name.value,
+                        password: password.value
+                    })
+                })
+                .then(response => response.json())
+                .then(data => {
+                    sessionStorage.setItem("accessToken", JSON.stringify(data.authorisation));
+                    sessionStorage.setItem("User", JSON.stringify(data.user));
+                    window.location.replace('/')
+                })
+                .catch((error) => {
+                    alert('An error occurred. Please try again');
+                });
         });
-    });
     </script>
 </body>
+
 </html>

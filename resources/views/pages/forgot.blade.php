@@ -57,9 +57,12 @@
         })
             .then(response => response.json())
             .then((data) => {
-                console.log(data);
-                confirmBtn.style.display = 'block';
-                otpField.style.display = 'block';
+                if(data.status !== 'error') {
+                    confirmBtn.style.display = 'block';
+                    otpField.style.display = 'block';
+                } else {
+                    alert("Lỗi gửi")
+                }
             })
             .catch((err) => {
                 alert('thau');
