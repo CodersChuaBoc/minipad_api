@@ -276,7 +276,7 @@
             const email = document.getElementById('email');
             const password = document.getElementById('password');
             const showPasswordCheckbox = document.querySelector('.showpw');
-            const captcha = document.getElementById('captcha');
+            const captcha = document.querySelector('#captcha');
 
             showPasswordCheckbox.addEventListener('change', function () {
                 if (this.checked) {
@@ -293,12 +293,22 @@
                     return;
                 }
 
+                // Phần này của Captcha
+                // START
+                const status = await fetch('/limit-attempts').then(response => response.json());
+
+                if (status.locked) {
+                    alert(`You are locked due to too many failed attempts. Please try again in ${status.remaining} seconds.`);
+                    return;
+                }
+
                 const sessionCaptcha = await fetch('/get-captcha').then(response => response.text());
 
                 if (captcha.value !== sessionCaptcha) {
-                    alert('Invalid captcha');
+                    alert('Invalid captcha. Pleasy try again');
                     return;
                 }
+                // END
 
                 fetch('/api/auth/user/login', {
                     method: 'POST',

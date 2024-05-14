@@ -25,3 +25,4 @@ Route::prefix('auth')->group(function () {
 
 Route::get('/captcha', [CaptchaController::class, 'createCaptcha']);
 Route::get('/get-captcha', [CaptchaController::class, 'getCaptcha']);
+Route::get('/limit-attempts', [CaptchaController::class, 'limitAttempts']);

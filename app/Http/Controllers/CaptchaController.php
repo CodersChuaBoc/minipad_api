@@ -38,4 +38,22 @@
         public function getCaptcha() {
             return response() -> make(session('captcha'));
         }
+
+        public function limitAttempts() {
+            $unlockTime = session('unlockTime');
+            $attempts = session('attempts', 0);
+
+            if ($unlockTime && $unlockTime > time()) {
+                return response() -> json(['locked' => true, 'remaining' => $unlockTime - time()]);
+            }
+
+            if ($attempts >= 5) {
+                session(['unlockTime' => time() + 60]);
+                session(['attempts' => 0]);
+                return response() -> json(['locked' => true, 'remaining' => 60]);
+            }
+
+            session(['attempts' => $attempts + 1]);
+            return response() -> json(['locked' => false]);
+        }
     }
