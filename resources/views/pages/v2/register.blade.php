@@ -115,7 +115,7 @@
             border: 1px solid #D3D3D3;
             border-radius: 5px;
             width: 300px;
-            height: 500px;
+            height: 580px;
             margin: 0 auto;
             background: #fff;
 
@@ -273,15 +273,32 @@
 
         document.getElementById('register').addEventListener('submit', async (e) => {
             e.preventDefault();
+
             if (email.value === '' || name.value === '' || password.value === '' || rePassword.value ===
                 '') {
                 alert('Please fill in all fields');
                 return;
             }
+
             if (password.value !== rePassword.value) {
                 alert('Passwords do not match');
                 return;
             }
+
+            // Phần này của Regex
+            // START
+            if (password.value.length < 8) {
+                alert('Password must be at least 8 characters long');
+                return;
+            }
+
+            const regex = /(?=.*[a-zA-Z])(?=.*\d)/.test(password.value);
+            if (!regex) {
+                alert('Password must contain at least one letter and one number');
+                return;
+            }
+            // END
+
             fetch('/api/auth/user/register', {
                     method: 'POST',
                     headers: {
