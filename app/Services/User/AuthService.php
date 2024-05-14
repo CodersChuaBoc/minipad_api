@@ -132,9 +132,10 @@ class AuthService
 
         if (!$user) {
             return response()->json([
+                'code' => 404,
                 'status' => 'error',
                 'message' => 'User not found',
-            ], 404);
+            ]);
         }
 
         $service = new static;
@@ -144,15 +145,17 @@ class AuthService
             $otpExist = Redis::get($email);
             if ($otpExist) {
                 return response()->json([
+                    'code' => 409,
                     'status' => 'error',
                     'message' => 'OTP already sent',
-                ], 409);
+                ]);
             }
         } catch (\Throwable $th) {
             return response()->json([
+                'code' => 500,
                 'status' => 'error',
                 'message' => 'Failed to send OTP',
-            ], 500);
+            ]);
         }
 
         try {
@@ -163,7 +166,7 @@ class AuthService
             return response()->json([
                 'status' => 'error',
                 'message' => 'Failed to send OTP',
-            ], 500);
+            ]);
         }
 
         try {
@@ -172,12 +175,14 @@ class AuthService
             Redis::del($email);
 
             return response()->json([
+                'code' => 500,
                 'status' => 'error',
                 'message' => 'Failed to send OTP',
             ], 500);
         }
 
         return response()->json([
+            'code' => 200,
             'status' => 'success',
             'message' => 'OTP sent successfully',
         ]);
@@ -189,25 +194,28 @@ class AuthService
 
         if (!$otpExist) {
             return response()->json([
+                'code' => 400,
                 'status' => 'error',
                 'message' => 'OTP expired',
-            ], 400);
+            ]);
         }
 
         if ($otpExist != $otp) {
             return response()->json([
+                'code' => 400, 
                 'status' => 'error',
                 'message' => 'Invalid OTP',
-            ], 400);
+            ]);
         }
 
         $user = User::where('email', $email)->first();
 
         if (!$user) {
             return response()->json([
+                'code' => 404,
                 'status' => 'error',
                 'message' => 'User not found',
-            ], 404);
+            ]);
         }
 
         $token = Auth::login($user);
@@ -231,15 +239,17 @@ class AuthService
 
         if (!$user) {
             return response()->json([
+                'code' => 404,
                 'status' => 'error',
                 'message' => 'User not found',
-            ], 404);
+            ]);
         }
 
         $user->password = Hash::make($password);
         $user->save();
 
         return response()->json([
+            'code' => 200,
             'status' => 'success',
             'message' => 'Password reset successfully',
         ]);

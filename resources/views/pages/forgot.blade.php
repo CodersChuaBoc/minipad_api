@@ -85,7 +85,7 @@
                 otp: otp.value,
             })
         })
-            .then(response => response.json())
+            .then(response => {response.json()})
             .then((data) => {
                 if (data.status === 'success') {
                     alert('OTP validated successfully');

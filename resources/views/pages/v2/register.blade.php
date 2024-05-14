@@ -115,7 +115,6 @@
             border: 1px solid #D3D3D3;
             border-radius: 5px;
             width: 300px;
-            height: 500px;
             margin: 0 auto;
             background: #fff;
 
