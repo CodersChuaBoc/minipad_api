@@ -1,4 +1,5 @@
 <?php 
+namespace App\Http\core;
 
 class Response {
     static function success($message, $data = null, $status = 200) {
