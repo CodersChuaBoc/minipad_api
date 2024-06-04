@@ -9,6 +9,7 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Redis;
+use Response;
 
 class AuthService
 {
@@ -17,10 +18,9 @@ class AuthService
         $user = User::where('email', $email)->first();
 
         if ($user) {
-            return response()->json([
-                'status' => 'error',
-                'message' => 'User already exists',
-            ], 409);
+            return Response::error([
+                'email' => 'Email already exists',
+            ], null, 409);
         }
 
         DB::beginTransaction();
@@ -33,33 +33,29 @@ class AuthService
 
         if (!$user) {
 
-            return response()->json([
-                'status' => 'error',
+            return Response::error([
                 'message' => 'Failed to create user',
-            ], 500);
+            ], null, 500);
         }
 
         $token = Auth::attempt(['email' => $email, 'password' => $password]);
 
         if (!$token) {
             DB::rollBack();
-            return response()->json([
-                'status' => 'error',
-                'message' => 'Unauthorized',
-            ], 401);
+            return Response::error([
+                'message' => 'Failed to create user',
+            ], null, 500);
         }
 
         DB::commit();
 
-        return response()->json([
-            'status' => 'success',
-            'message' => 'User created successfully',
+        return Response::success(["message" => "User created successfully"], [
             'user' => $user,
             'authorisation' => [
                 'token' => $token,
                 'type' => 'bearer',
             ]
-        ]);
+        ], 201);
     }
 
     public static function login(string $email, string $password)
@@ -67,32 +63,27 @@ class AuthService
         $user = User::where('email', $email)->first();
 
         if (!$user) {
-            return response()->json([
-                'status' => 'error',
-                'message' => 'User not found',
-            ], 404);
+            return Response::error([
+                'email' => 'Email not found',
+            ], null, 404);
         }
 
         if (!Hash::check($password, $user->password)) {
-            return response()->json([
-                'status' => 'error',
-                'message' => 'Unauthorized',
-            ], 401);
+            return Response::error([
+                'password' => 'Invalid password',
+            ], null, 401);
         }
 
 
         $token = Auth::attempt(['email' => $email, 'password' => $password]);
 
         if (!$token) {
-            return response()->json([
-                'status' => 'error',
-                'message' => 'Unauthorized',
-            ], 401);
+            return Response::error([
+                'message' => 'Failed to login user',
+            ], null, 500);
         }
 
-        return response()->json([
-            'status' => 'success',
-            'message' => 'User logged in successfully',
+        return Response::success(["message" => "User logged in successfully"], [
             'user' => $user,
             'authorisation' => [
                 'token' => $token,
@@ -105,19 +96,14 @@ class AuthService
     {
         Auth::logout();
 
-        return response()->json([
-            'status' => 'success',
-            'message' => 'User logged out successfully',
-        ]);
+        return Response::success(["message" => "User logged out successfully"], null, 200);
     }
 
     public static function refresh()
     {
         $token = Auth::refresh();
 
-        return response()->json([
-            'status' => 'success',
-            'message' => 'Token refreshed successfully',
+        return Response::success(["message" => "Token refreshed successfully"], [
             'authorisation' => [
                 'token' => $token,
                 'type' => 'bearer',
@@ -131,11 +117,9 @@ class AuthService
         $user = User::where('email', $email)->first();
 
         if (!$user) {
-            return response()->json([
-                'code' => 404,
-                'status' => 'error',
-                'message' => 'User not found',
-            ]);
+            return Response::error([
+                'email' => 'Email not found',
+            ], null, 404);
         }
 
         $service = new static;
@@ -144,18 +128,14 @@ class AuthService
         try {
             $otpExist = Redis::get($email);
             if ($otpExist) {
-                return response()->json([
-                    'code' => 409,
-                    'status' => 'error',
-                    'message' => 'OTP already sent',
-                ]);
+                return Response::error([
+                    'message' => 'Failed to send OTP',
+                ], null, 500);
             }
         } catch (\Throwable $th) {
-            return response()->json([
-                'code' => 500,
-                'status' => 'error',
+            return Response::error([
                 'message' => 'Failed to send OTP',
-            ]);
+            ], null, 500);
         }
 
         try {
@@ -163,10 +143,9 @@ class AuthService
             // Set the OTP to expire in 5 minutes
             Redis::expire($email, 300);
         } catch (\Throwable $th) {
-            return response()->json([
-                'status' => 'error',
+            return Response::error([
                 'message' => 'Failed to send OTP',
-            ]);
+            ], null, 500);
         }
 
         try {
@@ -174,18 +153,12 @@ class AuthService
         } catch (\Throwable $th) {
             Redis::del($email);
 
-            return response()->json([
-                'code' => 500,
-                'status' => 'error',
+            return Response::error([
                 'message' => 'Failed to send OTP',
-            ], 500);
+            ], null, 500);
         }
 
-        return response()->json([
-            'code' => 200,
-            'status' => 'success',
-            'message' => 'OTP sent successfully',
-        ]);
+        return Response::success(["message" => "OTP sent successfully"], null, 200);
     }
 
     public static function validateOTP($email, $otp)
@@ -193,36 +166,29 @@ class AuthService
         $otpExist = Redis::get($email);
 
         if (!$otpExist) {
-            return response()->json([
-                'code' => 400,
-                'status' => 'error',
+            return Response::error([
                 'message' => 'OTP expired',
-            ]);
+            ], null, 400);
         }
 
         if ($otpExist != $otp) {
-            return response()->json([
-                'code' => 400, 
-                'status' => 'error',
+            return Response::error([
                 'message' => 'Invalid OTP',
-            ]);
+            ], null, 400);
         }
 
         $user = User::where('email', $email)->first();
 
         if (!$user) {
-            return response()->json([
-                'code' => 404,
-                'status' => 'error',
+            return Response::error([
                 'message' => 'User not found',
-            ]);
+            ], null, 404);
         }
 
         $token = Auth::login($user);
 
-        return response()->json([
-            'status' => 'success',
-            'message' => 'OTP validated successfully',
+        return Response::success(["message" => "OTP validated successfully"], [
+            'user' => $user,
             'authorisation' => [
                 'token' => $token,
                 'type' => 'bearer',
@@ -238,21 +204,15 @@ class AuthService
         $user = User::where('email', $email)->first();
 
         if (!$user) {
-            return response()->json([
-                'code' => 404,
-                'status' => 'error',
+            return Response::error([
                 'message' => 'User not found',
-            ]);
+            ], null, 404);
         }
 
         $user->password = Hash::make($password);
         $user->save();
 
-        return response()->json([
-            'code' => 200,
-            'status' => 'success',
-            'message' => 'Password reset successfully',
-        ]);
+        return Response::success(["message" => "Password reset successfully"], null, 200);
     }
 
     public function generateOTP()
