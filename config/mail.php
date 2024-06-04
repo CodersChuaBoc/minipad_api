@@ -89,6 +89,11 @@ return [
                 'postmark',
             ],
         ],
+        'mailers' => [
+            'mailgun' => [
+              'transport' => 'mailgun',
+            ],
+          ],
 
     ],
 
@@ -106,6 +111,12 @@ return [
     'from' => [
         'address' => env('MAIL_FROM_ADDRESS', 'hello@example.com'),
         'name' => env('MAIL_FROM_NAME', 'Example'),
+    ],
+
+    'mailgun' => [
+        'transport' => 'mailgun',
+        'domain' => env('MAILGUN_DOMAIN'),
+        'secret' => env('MAILGUN_SECRET'),
     ],
 
 ];
