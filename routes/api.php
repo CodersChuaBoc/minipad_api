@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\User\AuthController;
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\User\UserController;
 
 // auth route
 Route::controller(AuthController::class)->group(function () {
@@ -15,3 +16,10 @@ Route::controller(AuthController::class)->group(function () {
         Route::post('reset-password', 'resetPassword');
     });
 })->middleware('auth:api');
+
+
+Route::controller(UserController::class)->group(function () {
+    Route::group(['prefix' => '/auth/user'], function () {
+        Route::post('update', 'updateUser');
+    });
+});
